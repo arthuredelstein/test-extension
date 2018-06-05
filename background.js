@@ -1,5 +1,3 @@
 console.log("TestExtension started.");
 
-let port = browser.runtime.connect();
-
-port.onMessage.addListener(x => console.log("port message received:", x));
+browser.runtime.onMessage.addListener(msg => console.log("message received by TestExtension:", msg));

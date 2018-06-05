@@ -1,18 +1,14 @@
-In Firefox, set "devtools.chrome.enabled" to true. Then open the browser console, and enter:
+In Firefox, set "devtools.chrome.enabled" to true.
 
-```
-const {LegacyExtensionContext} = ChromeUtils.import("resource://gre/modules/LegacyExtensionsUtils.jsm", {});
-let context = new LegacyExtensionContext({ id : "TestExtension@torproject.org"});
-let port;
-context.api.browser.runtime.onConnect.addListener(x => { port = x; });
-```
-
-Now go to `about:debugging#addons` and click "Load Temporary Addon". Navigate to `manifest.json`.
+Now go to `about:debugging#addons` and click "Load Temporary Addon". Navigate to `manifest.json`. Or, if TestExtension is already loaded, just hit the `Reload` button.
 
 In the browser console, you should see `TextExtension started.`. Then enter:
 
 ```
-port.postMessage("hello from legacy");
+const {LegacyExtensionContext} = ChromeUtils.import("resource://gre/modules/LegacyExtensionsUtils.jsm", {});
+let context = new LegacyExtensionContext({ id : "TestExtension@torproject.org"});
+let messageManager = context.messenger.messageManagers[0];
+context.messenger.sendMessage(messageManager, { testMessage: "hello from legacy"}, "TestExtension@torproject.org");
 ```
 
-You should get: `port message received: hello from legacy`.
+You should get: `message received by TestExtension: Object { testMessage: "hello from legacy" }`.
